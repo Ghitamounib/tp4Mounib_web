@@ -8,6 +8,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import ma.emsi.mounib.tp4mounib_web.llm.LlmClient;
+import ma.emsi.mounib.tp4mounib_web.llm.RoutageRagClient;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public class Bb implements Serializable {
     // Injection du client LLM
     @Inject
     private LlmClient llmClient;
+    @Inject
+    private transient RoutageRagClient ragClient;
+
 
     /**
      * Obligatoire pour un bean CDI (classe gérée par CDI), s'il y a un autre constructeur.
@@ -128,12 +132,12 @@ public class Bb implements Serializable {
         try {
             // Si c’est la première question, définir le rôle système
             if (conversation.isEmpty()) {
-                llmClient.setSystemRole(roleSysteme);
+                ragClient.setSystemRole(roleSysteme); // <- il faudra ajouter ce setter dans RoutageRagClient
                 roleSystemeChangeable = false;
             }
 
-            // Envoyer la question au LLM
-            this.reponse = llmClient.ask(question);
+// Envoyer la question au RAG
+            this.reponse = ragClient.ask(question);
 
             afficherConversation();
         } catch (Exception e) {
