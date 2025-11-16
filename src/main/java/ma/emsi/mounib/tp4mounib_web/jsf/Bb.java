@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import ma.emsi.mounib.tp4mounib_web.llm.LlmClient;
 import ma.emsi.mounib.tp4mounib_web.llm.RoutageRagClient;
+import ma.emsi.mounib.tp4mounib_web.llm.TavilyRagClient;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,6 +65,9 @@ public class Bb implements Serializable {
     private LlmClient llmClient;
     @Inject
     private transient RoutageRagClient ragClient;
+    @Inject
+    private TavilyRagClient tavilyRagClient;
+
 
 
     /**
@@ -132,12 +136,12 @@ public class Bb implements Serializable {
         try {
             // Si c’est la première question, définir le rôle système
             if (conversation.isEmpty()) {
-                ragClient.setSystemRole(roleSysteme); // <- il faudra ajouter ce setter dans RoutageRagClient
+                tavilyRagClient.setSystemRole(roleSysteme); // <- il faudra ajouter ce setter dans RoutageRagClient
                 roleSystemeChangeable = false;
             }
 
 // Envoyer la question au RAG
-            this.reponse = ragClient.ask(question);
+            this.reponse = tavilyRagClient.ask(question);
 
             afficherConversation();
         } catch (Exception e) {
